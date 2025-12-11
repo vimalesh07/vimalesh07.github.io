@@ -223,13 +223,9 @@ function setupScrollTopButton() {
     const scrollTopBtn = document.getElementById('scrollTopBtn');
     
     if (scrollTopBtn) {
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                scrollTopBtn.classList.add('visible');
-            } else {
-                scrollTopBtn.classList.remove('visible');
-            }
-        });
+        // Visibility of scrollTopBtn is handled by the centralized scroll handler in index.html.
+        // Set initial visibility based on current position.
+        if (window.pageYOffset > 300) scrollTopBtn.classList.add('visible'); else scrollTopBtn.classList.remove('visible');
         
         scrollTopBtn.addEventListener('click', () => {
             window.scrollTo({
@@ -305,9 +301,10 @@ function animateTyping(element, text, speed) {
 function createParticles() {
     const particlesContainer = document.querySelector('.home-particles');
     if (!particlesContainer) return;
-    
-    const particleCount = 30;
-    
+    // Reduce particle count on small screens to improve performance
+    const isSmall = window.innerWidth < 900 || window.devicePixelRatio && window.devicePixelRatio > 2 && window.innerWidth < 1200;
+    const particleCount = isSmall ? 10 : 30;
+
     for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
         particle.style.position = 'absolute';
@@ -318,8 +315,10 @@ function createParticles() {
         particle.style.opacity = Math.random() * 0.5 + 0.2;
         particle.style.left = Math.random() * 100 + '%';
         particle.style.top = Math.random() * 100 + '%';
-        particle.style.animation = `float ${Math.random() * 3 + 2}s ease-in-out infinite`;
+        const dur = (Math.random() * 3 + 2).toFixed(2);
+        particle.style.animation = `float ${dur}s ease-in-out infinite`;
         particle.style.animationDelay = Math.random() * 2 + 's';
+        particle.style.willChange = 'transform, opacity';
         
         particlesContainer.appendChild(particle);
     }
@@ -354,18 +353,21 @@ function setupAboutSection() {
 
 function animateCounter(element, start, end, duration) {
     const range = end - start;
-    const increment = range / (duration / 16);
-    let current = start;
-    
-    const timer = setInterval(() => {
-        current += increment;
-        if (current >= end) {
-            element.textContent = end;
-            clearInterval(timer);
+    let startTime = null;
+
+    function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        const value = Math.floor(start + range * progress);
+        element.textContent = value;
+        if (progress < 1) {
+            requestAnimationFrame(step);
         } else {
-            element.textContent = Math.floor(current);
+            element.textContent = end;
         }
-    }, 16);
+    }
+
+    requestAnimationFrame(step);
 }
 
 // ===================================
@@ -1164,3 +1166,128 @@ window.portfolioApp = {
 console.log('Portfolio app loaded successfully! 🚀');
 console.log('Version: 1.0.0');
 console.log('Developer: VIMALESH S');
+
+// -----------------------------
+// Demo Viewer initializers (moved from inline scripts in index.html)
+// -----------------------------
+document.addEventListener('DOMContentLoaded', () => {
+    // Viewer 1: mainVideo / mainImage / #demoThumbnails
+    (function() {
+        const videoBox = document.getElementById('mainVideo');
+        const imageBox = document.getElementById('mainImage');
+        const thumbs = document.querySelectorAll('#demoThumbnails .thumb');
+        if (!thumbs || thumbs.length === 0) return;
+
+        function activate(btn) {
+            thumbs.forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+
+            const type = btn.dataset.type;
+            const src = btn.dataset.src;
+
+            if (type === 'video') {
+                if (imageBox) imageBox.style.display = 'none';
+                if (videoBox) {
+                    videoBox.style.display = 'block';
+                    videoBox.innerHTML = `<source src="${src}" type="video/mp4">`;
+                    videoBox.load && videoBox.load();
+                    videoBox.play && videoBox.play().catch(()=>{});
+                }
+            } else {
+                try { videoBox && videoBox.pause && videoBox.pause(); } catch(e){}
+                if (videoBox) videoBox.style.display = 'none';
+                if (imageBox) {
+                    imageBox.src = src;
+                    imageBox.style.display = 'block';
+                }
+            }
+        }
+
+        thumbs.forEach(btn => btn.addEventListener('click', () => activate(btn)));
+    })();
+
+    // Viewer 2: demoThumbnails3 -> mainImage3
+    (function() {
+        const mainImage = document.getElementById('mainImage3');
+        const thumbs = document.querySelectorAll('#demoThumbnails3 .thumb');
+        if (!thumbs || thumbs.length === 0 || !mainImage) return;
+
+        thumbs.forEach(btn => {
+            btn.addEventListener('click', () => {
+                thumbs.forEach(t => t.classList.remove('active'));
+                btn.classList.add('active');
+                mainImage.src = btn.dataset.src;
+            });
+        });
+    })();
+
+    // Viewer 3: demoThumbnails4 -> mainVideo4 / mainImage4
+    (function() {
+        const videoBox = document.getElementById('mainVideo4');
+        const imageBox = document.getElementById('mainImage4');
+        const thumbs = document.querySelectorAll('#demoThumbnails4 .thumb');
+        if (!thumbs || thumbs.length === 0) return;
+
+        function activate(btn) {
+            thumbs.forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+
+            const type = btn.dataset.type;
+            const src = btn.dataset.src;
+
+            if (type === 'video') {
+                if (imageBox) imageBox.style.display = 'none';
+                if (videoBox) {
+                    videoBox.style.display = 'block';
+                    videoBox.innerHTML = `<source src="${src}" type="video/mp4">`;
+                    videoBox.load && videoBox.load();
+                    videoBox.play && videoBox.play().catch(()=>{});
+                }
+            } else {
+                try { videoBox && videoBox.pause && videoBox.pause(); } catch(e){}
+                if (videoBox) videoBox.style.display = 'none';
+                if (imageBox) {
+                    imageBox.src = src;
+                    imageBox.style.display = 'block';
+                }
+            }
+        }
+
+        thumbs.forEach(btn => btn.addEventListener('click', () => activate(btn)));
+    })();
+
+    // Viewer 4: demoThumbnails6 -> mainVideo6 / mainImage6
+    (function() {
+        const videoBox = document.getElementById('mainVideo6');
+        const imageBox = document.getElementById('mainImage6');
+        const thumbs = document.querySelectorAll('#demoThumbnails6 .thumb');
+        if (!thumbs || thumbs.length === 0) return;
+
+        function activate(btn) {
+            thumbs.forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+
+            const type = btn.dataset.type;
+            const src = btn.dataset.src;
+
+            if (type === 'video') {
+                if (imageBox) imageBox.style.display = 'none';
+                if (videoBox) {
+                    videoBox.style.display = 'block';
+                    videoBox.innerHTML = `<source src="${src}" type="video/mp4">`;
+                    videoBox.load && videoBox.load();
+                    videoBox.play && videoBox.play().catch(()=>{});
+                }
+            } else {
+                try { videoBox && videoBox.pause && videoBox.pause(); } catch(e){}
+                if (videoBox) videoBox.style.display = 'none';
+                if (imageBox) {
+                    imageBox.src = src;
+                    imageBox.style.display = 'block';
+                }
+            }
+        }
+
+        thumbs.forEach(btn => btn.addEventListener('click', () => activate(btn)));
+    })();
+});
