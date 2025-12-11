@@ -55,21 +55,17 @@ function setupMobileMenu() {
     const navLinks = document.querySelectorAll('.nav-link');
     
     if (hamburger && navMenu) {
-        hamburger.addEventListener('click', () => {
+        hamburger.addEventListener('click', (e) => {
+            e.stopPropagation();
             hamburger.classList.toggle('active');
             navMenu.classList.toggle('active');
             state.isMenuOpen = !state.isMenuOpen;
             
-            // Animate hamburger bars
-            const bars = hamburger.querySelectorAll('.bar');
+            // Prevent body scroll when menu is open
             if (state.isMenuOpen) {
-                bars[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
-                bars[1].style.opacity = '0';
-                bars[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
+                document.body.style.overflow = 'hidden';
             } else {
-                bars[0].style.transform = 'none';
-                bars[1].style.opacity = '1';
-                bars[2].style.transform = 'none';
+                document.body.style.overflow = '';
             }
         });
         
@@ -80,11 +76,7 @@ function setupMobileMenu() {
                     hamburger.classList.remove('active');
                     navMenu.classList.remove('active');
                     state.isMenuOpen = false;
-                    
-                    const bars = hamburger.querySelectorAll('.bar');
-                    bars[0].style.transform = 'none';
-                    bars[1].style.opacity = '1';
-                    bars[2].style.transform = 'none';
+                    document.body.style.overflow = '';
                 }
             });
         });
@@ -97,11 +89,17 @@ function setupMobileMenu() {
                 hamburger.classList.remove('active');
                 navMenu.classList.remove('active');
                 state.isMenuOpen = false;
-                
-                const bars = hamburger.querySelectorAll('.bar');
-                bars[0].style.transform = 'none';
-                bars[1].style.opacity = '1';
-                bars[2].style.transform = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // Close menu on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && state.isMenuOpen) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+                state.isMenuOpen = false;
+                document.body.style.overflow = '';
             }
         });
     }
@@ -111,6 +109,48 @@ function setupMobileMenu() {
 // Smooth Scroll Navigation
 // ===================================
 function setupSmoothScroll() {
+    // Polyfill for smooth scroll on iOS and older Android browsers
+    const smoothScrollSupported = () => {
+        return 'scrollBehavior' in document.documentElement.style;
+    };
+
+    const smoothScrollTo = (element, offset = 80) => {
+        if (smoothScrollSupported()) {
+            const headerOffset = offset;
+            const elementPosition = element.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        } else {
+            // Fallback for browsers that don't support smooth scroll
+            const startPosition = window.pageYOffset;
+            const headerOffset = offset;
+            const elementPosition = element.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            const distance = offsetPosition - startPosition;
+            const duration = 1000;
+            let start = null;
+            
+            const animation = (currentTime) => {
+                if (start === null) start = currentTime;
+                const timeElapsed = currentTime - start;
+                const easeInOutQuad = (t, b, c, d) => {
+                    t /= d / 2;
+                    if (t < 1) return c / 2 * t * t + b;
+                    t--;
+                    return -c / 2 * (t * (t - 2) - 1) + b;
+                };
+                const run = easeInOutQuad(timeElapsed, startPosition, distance, duration);
+                window.scrollTo(0, run);
+                if (timeElapsed < duration) requestAnimationFrame(animation);
+            };
+            requestAnimationFrame(animation);
+        }
+    };
+
     const navLinks = document.querySelectorAll('.nav-link');
     
     navLinks.forEach(link => {
@@ -121,14 +161,7 @@ function setupSmoothScroll() {
             const targetSection = document.querySelector(targetId);
             
             if (targetSection) {
-                const headerOffset = 80;
-                const elementPosition = targetSection.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                });
+                smoothScrollTo(targetSection, 80);
             }
         });
     });
@@ -142,14 +175,7 @@ function setupSmoothScroll() {
                 e.preventDefault();
                 const targetSection = document.querySelector(href);
                 if (targetSection) {
-                    const headerOffset = 80;
-                    const elementPosition = targetSection.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                    
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
-                    });
+                    smoothScrollTo(targetSection, 80);
                 }
             });
         }
