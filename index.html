@@ -8,66 +8,60 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Theme variables */
+        /* ==================== BASE STYLES ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
-            --primary: #9D00FF;
-            --secondary: #7C3AED;
-            --bg-light: #f7f7fb;
-            --bg-lighter: #f2f2f6;
-            --bg-card: #ffffff;
-            --text-dark: #111827;
-            --text-gray: #6b7280;
-            --shadow: 0 10px 30px rgba(0,0,0,0.08);
-            --gradient-1: linear-gradient(135deg, #9D00FF 0%, #C77DFF 100%);
-            --gradient-2: linear-gradient(135deg, #7C3AED 0%, #E0AAFF 100%);
-        }
+                --primary: #9D00FF; --secondary: #7C3AED;
+                --gradient-1: linear-gradient(135deg, #9D00FF 0%, #C77DFF 100%);
+                --gradient-2: linear-gradient(135deg, #7C3AED 0%, #E0AAFF 100%);
+                }
+                [data-theme="vibrant"] {
+                --primary: #FF0099; --secondary: #FFCB05;
+                --gradient-1: linear-gradient(135deg, #FF0099 0%, #FFCB05 100%);
+                --gradient-2: linear-gradient(135deg, #FF5ACD 0%, #FFC55C 100%);
+                }
+                [data-theme="aqua"] {
+                --primary: #17EAD9; --secondary: #6078EA;
+                --gradient-1: linear-gradient(135deg, #17EAD9 0%, #6078EA 100%);
+                --gradient-2: linear-gradient(135deg, #42E695 0%, #FF0080 100%);
+                }
+                [data-theme="sunset"] {
+                --primary: #FF6A00; --secondary: #FFD800;
+                --gradient-1: linear-gradient(135deg, #FF6A00 0%, #FFD800 100%);
+                --gradient-2: linear-gradient(135deg, #FD5E53 0%, #FFC371 100%);
+                }
+                [data-theme="emerald"] {
+                --primary: #00FFB4; --secondary: #0099F7;
+                --gradient-1: linear-gradient(135deg, #00FFB4 0%, #0099F7 100%);
+                --gradient-2: linear-gradient(135deg, #43E97B 0%, #38F9D7 100%);
+                }
+                [data-theme="cyber"] {
+                --primary: #FF00CC; --secondary: #333399;
+                --gradient-1: linear-gradient(135deg, #FF00CC 0%, #333399 100%);
+                --gradient-2: linear-gradient(135deg, #7DE2FC 0%, #B9B6E5 100%);
+                }
+                [data-theme="hot"] {
+                --primary: #FF416C; --secondary: #FF4B2B;
+                --gradient-1: linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%);
+                --gradient-2: linear-gradient(135deg, #F9D423 0%, #FF4E50 100%);
+                }
+                [data-theme="mint"] {
+                --primary: #43E97B; --secondary: #38F9D7;
+                --gradient-1: linear-gradient(135deg, #43E97B 0%, #38F9D7 100%);
+                --gradient-2: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+                }
+                .theme-btn {
+                width:28px; height:28px; border-radius:50%; border:none; outline:none; cursor:pointer; margin:0 3px;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.22); transition: box-shadow 0.2s, transform 0.2s;
+                }
+                .theme-btn:hover, .theme-btn.active { box-shadow:0 0 14px 4px var(--primary); transform:scale(1.15);}
 
-        [data-theme="vibrant"] {
-            --primary: #FF0099; --secondary: #FFCB05;
-            --gradient-1: linear-gradient(135deg, #FF0099 0%, #FFCB05 100%);
-            --gradient-2: linear-gradient(135deg, #FF5ACD 0%, #FFC55C 100%);
-        }
-        [data-theme="aqua"] {
-            --primary: #17EAD9; --secondary: #6078EA;
-            --gradient-1: linear-gradient(135deg, #17EAD9 0%, #6078EA 100%);
-            --gradient-2: linear-gradient(135deg, #42E695 0%, #FF0080 100%);
-        }
-        [data-theme="sunset"] {
-            --primary: #FF6A00; --secondary: #FFD800;
-            --gradient-1: linear-gradient(135deg, #FF6A00 0%, #FFD800 100%);
-            --gradient-2: linear-gradient(135deg, #FD5E53 0%, #FFC371 100%);
-        }
-        [data-theme="emerald"] {
-            --primary: #00FFB4; --secondary: #0099F7;
-            --gradient-1: linear-gradient(135deg, #00FFB4 0%, #0099F7 100%);
-            --gradient-2: linear-gradient(135deg, #43E97B 0%, #38F9D7 100%);
-        }
-        [data-theme="cyber"] {
-            --primary: #FF00CC; --secondary: #333399;
-            --gradient-1: linear-gradient(135deg, #FF00CC 0%, #333399 100%);
-            --gradient-2: linear-gradient(135deg, #7DE2FC 0%, #B9B6E5 100%);
-        }
-        [data-theme="hot"] {
-            --primary: #FF416C; --secondary: #FF4B2B;
-            --gradient-1: linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%);
-            --gradient-2: linear-gradient(135deg, #F9D423 0%, #FF4E50 100%);
-        }
-        [data-theme="mint"] {
-            --primary: #43E97B; --secondary: #38F9D7;
-            --gradient-1: linear-gradient(135deg, #43E97B 0%, #38F9D7 100%);
-            --gradient-2: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        }
-
-        .theme-btn {
-            width:28px; height:28px; border-radius:50%; border:none; outline:none; cursor:pointer; margin:0 3px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.22); transition: box-shadow 0.2s, transform 0.2s;
-        }
-        .theme-btn:hover, .theme-btn.active { box-shadow:0 0 14px 4px var(--primary); transform:scale(1.15);}
-
-        html { 
-            scroll-behavior: smooth;
-            -webkit-scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: 'Times New Roman', Times, serif;
@@ -76,8 +70,6 @@
             margin: 0;
             padding: 0;
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
         h1, h2, h3, h4, h5, h6 { font-family: 'Times New Roman', Times, serif; }
@@ -1005,18 +997,15 @@
 
         .view-demo-btn,
         .view-code-btn {
-            padding: 0.6rem 1rem;
-            min-width: 110px;
-            height: 44px;
-            border-radius: 14px;
+            padding: 0.8rem 1.5rem;
+            border-radius: 20px;
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             border: none;
             cursor: pointer;
-            transition: all 0.22s ease;
-            display: inline-flex;
+            transition: all 0.3s ease;
+            display: flex;
             align-items: center;
-            justify-content: center;
             gap: 8px;
         }
 
@@ -1040,18 +1029,6 @@
             background: var(--gradient-1);
             color: white;
             transform: translateY(-3px);
-        }
-
-        /* Make the code button visually consistent with demo button */
-        .view-code-btn {
-            background: transparent;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-            box-sizing: border-box;
-        }
-
-        .view-code-btn i {
-            font-size: 1.05rem;
         }
 
         /* ==================== SKILLS ==================== */
@@ -1724,41 +1701,23 @@
                 flex-direction: column;
                 cursor: pointer;
                 gap: 5px;
-                padding: 10px;
-                border-radius: 8px;
-                transition: all 0.3s ease;
-                -webkit-tap-highlight-color: transparent;
-                touch-action: manipulation;
-                -ms-touch-action: manipulation;
-            }
-
-            .hamburger:active {
-                background: rgba(157, 0, 255, 0.1);
             }
             
-            .hamburger span,
-            .hamburger .bar {
+            .hamburger span {
                 width: 28px;
                 height: 3px;
                 background: var(--text-dark);
-                transition: all 0.35s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+                transition: 0.3s;
                 border-radius: 3px;
-                transform-origin: center;
-                display: block;
             }
             
-            .hamburger.active span:nth-child(1),
-            .hamburger.active .bar:nth-child(1) { 
+            .hamburger.active span:nth-child(1) { 
                 transform: rotate(-45deg) translate(-7px, 6px); 
             }
             
-            .hamburger.active span:nth-child(2),
-            .hamburger.active .bar:nth-child(2) { 
-                opacity: 0; 
-            }
+            .hamburger.active span:nth-child(2) { opacity: 0; }
             
-            .hamburger.active span:nth-child(3),
-            .hamburger.active .bar:nth-child(3) { 
+            .hamburger.active span:nth-child(3) { 
                 transform: rotate(45deg) translate(-7px, -6px); 
             }
 
@@ -1899,13 +1858,10 @@
         box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2);
         border-radius: 0 20px 20px 0;
         border: 2px solid var(--primary);
-        transition: left 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-        -webkit-transition: left 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-        will-change: left;
+        transition: left 0.4s ease;
         z-index: 999;
         height: calc(100vh - 65px);
         overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
     }
     
     .nav-menu.active {
@@ -1931,41 +1887,26 @@
         cursor: pointer;
         gap: 4px;
         z-index: 1001;
-        padding: 8px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        -webkit-tap-highlight-color: transparent;
-        touch-action: manipulation;
-        -ms-touch-action: manipulation;
-    }
-
-    .hamburger:active {
-        background: rgba(157, 0, 255, 0.1);
+        padding: 5px;
     }
     
-    .hamburger span,
-    .hamburger .bar {
+    .hamburger span {
         width: 25px;
         height: 3px;
         background: var(--primary);
-        transition: all 0.35s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        transition: all 0.3s ease;
         border-radius: 3px;
-        transform-origin: center;
-        display: block;
     }
     
-    .hamburger.active span:nth-child(1),
-    .hamburger.active .bar:nth-child(1) {
+    .hamburger.active span:nth-child(1) {
         transform: rotate(-45deg) translate(-5px, 6px);
     }
     
-    .hamburger.active span:nth-child(2),
-    .hamburger.active .bar:nth-child(2) {
+    .hamburger.active span:nth-child(2) {
         opacity: 0;
     }
     
-    .hamburger.active span:nth-child(3),
-    .hamburger.active .bar:nth-child(3) {
+    .hamburger.active span:nth-child(3) {
         transform: rotate(45deg) translate(-5px, -6px);
     }
     
@@ -1983,58 +1924,6 @@
         width: 40px;
         height: 40px;
         font-size: 1rem;
-    }
-
-    /* Theme toggle (small icon next to hamburger) */
-    .theme-toggle {
-        width: 40px;
-        height: 40px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 10px;
-        background: transparent;
-        border: 2px solid transparent;
-        color: var(--primary);
-        cursor: pointer;
-        transition: background 0.18s ease, transform 0.12s ease;
-        margin-left: 8px;
-    }
-
-    .theme-toggle:active { transform: scale(0.98); }
-
-    /* Popup that appears when theme toggle pressed (mobile) */
-    .theme-popup {
-        position: absolute;
-        top: 64px;
-        right: 16px;
-        background: var(--bg-lighter);
-        padding: 8px;
-        border-radius: 12px;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        opacity: 0;
-        pointer-events: none;
-        transform: translateY(-6px) scale(0.98);
-        transition: opacity 0.18s ease, transform 0.18s ease;
-        z-index: 1100;
-    }
-
-    .theme-popup.open {
-        opacity: 1;
-        pointer-events: auto;
-        transform: translateY(0) scale(1);
-    }
-
-    .theme-popup .theme-btn { width:36px; height:36px; border-radius:50%; border:none; outline:none; }
-
-    /* Only show popup on small screens (we already have floating palette for desktop) */
-    @media (min-width: 901px) {
-        .theme-toggle { display: none; }
-        .theme-popup { display: none !important; }
-    }
     }
     
     /* === HERO SECTION MOBILE === */
@@ -2363,13 +2252,6 @@
         justify-content: center;
         padding: 0.75rem 1.5rem;
         font-size: 0.9rem;
-    }
-
-    /* Hide the floating theme palette on small screens (we provide compact controls in the hamburger) */
-    @media (max-width: 900px) {
-        .theme-switcher {
-            display: none !important;
-        }
     }
     
     /* === SKILLS SECTION MOBILE === */
@@ -2764,6 +2646,8 @@
     .btn-secondary {
         padding: 0.85rem 2rem;
     }
+}
+
 /* ===== SMALL MOBILE DEVICES (PHONES) ===== */
 @media (max-width: 480px) {
     
@@ -3003,11 +2887,6 @@
                 <li><a href="#skills" class="nav-link">Skills</a></li>
                 <li><a href="#timeline" class="nav-link">Timeline</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
-                <!-- Mobile theme switcher: compact, two-theme options to save space -->
-                <li class="nav-link theme-switcher-mobile" style="display:flex;justify-content:center;gap:8px;padding:12px 18px;">
-                    <button class="theme-btn" data-theme="default" title="Default" style="width:34px;height:34px;border-radius:50%;border:none;outline:none;background:linear-gradient(135deg,#9D00FF,#C77DFF);"></button>
-                    <button class="theme-btn" data-theme="vibrant" title="Vibrant" style="width:34px;height:34px;border-radius:50%;border:none;outline:none;background:linear-gradient(135deg,#FF0099,#FFCB05);"></button>
-                </li>
             </ul>
             <div class="nav-actions">
                 <a href="https://drive.google.com/uc?export=download&id=1gAO70ptFJUgvb8zJvo_OfsSgX-jhwSoV
@@ -3019,24 +2898,9 @@
                 </button>
             </div>
             <div class="hamburger">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
-            <button class="theme-toggle" id="themeToggle" aria-label="Open theme chooser" title="Theme">
-                <i class="fas fa-sun"></i>
-            </button>
-            <div class="theme-popup" id="themePopup" aria-hidden="true">
-                <div style="display:flex;gap:8px;align-items:center;overflow-x:auto;padding:6px;">
-                    <button class="theme-btn" data-theme="default" title="Default" style="background:linear-gradient(135deg,#9D00FF,#C77DFF);"></button>
-                    <button class="theme-btn" data-theme="vibrant" title="Vibrant" style="background:linear-gradient(135deg,#FF0099,#FFCB05);"></button>
-                    <button class="theme-btn" data-theme="aqua" title="Aqua" style="background:linear-gradient(135deg,#17EAD9,#6078EA);"></button>
-                    <button class="theme-btn" data-theme="sunset" title="Sunset" style="background:linear-gradient(135deg,#FF6A00,#FFD800);"></button>
-                    <button class="theme-btn" data-theme="emerald" title="Emerald" style="background:linear-gradient(135deg,#00FFB4,#0099F7);"></button>
-                    <button class="theme-btn" data-theme="cyber" title="Cyberpunk" style="background:linear-gradient(135deg,#FF00CC,#333399);"></button>
-                    <button class="theme-btn" data-theme="hot" title="Hot Red" style="background:linear-gradient(135deg,#FF416C,#FF4B2B);"></button>
-                    <button class="theme-btn" data-theme="mint" title="Mint" style="background:linear-gradient(135deg,#43E97B,#38F9D7);"></button>
-                </div>
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </div>
     </nav>
@@ -3505,7 +3369,38 @@
             .thumb.active { outline:3px solid #3b82f6; }
             </style>
 
-            
+            <!-- Script -->
+            <script>
+            (function() {
+                const videoBox = document.getElementById("mainVideo");
+                const imageBox = document.getElementById("mainImage");
+                const thumbs = document.querySelectorAll("#demoThumbnails .thumb");
+
+                function activate(btn) {
+                    thumbs.forEach(t => t.classList.remove("active"));
+                    btn.classList.add("active");
+
+                    const type = btn.dataset.type;
+                    const src = btn.dataset.src;
+
+                    if (type === "video") {
+                        imageBox.style.display = "none";
+                        videoBox.style.display = "block";
+
+                        videoBox.innerHTML = `<source src="${src}" type="video/mp4">`;
+                        videoBox.load();
+                        videoBox.play().catch(()=>{});
+                    } else {
+                        try { videoBox.pause(); } catch(e){}
+                        videoBox.style.display = "none";
+                        imageBox.src = src;
+                        imageBox.style.display = "block";
+                    }
+                }
+
+                thumbs.forEach(btn => btn.addEventListener("click", () => activate(btn)));
+            })();
+            </script>
 
             <div id="modal3" class="modal">
                 <div class="modal-content">
@@ -3576,8 +3471,22 @@
             .thumb.active { outline:3px solid #3b82f6; }
             </style>
 
-            <!-- Simple Script for Image Switching (moved to JS/main.js) -->
-            <!-- removed inline to avoid duplicate handlers; functionality lives in JS/main.js -->
+            <!-- Simple Script for Image Switching -->
+            <script>
+            (function() {
+                const mainImage = document.getElementById("mainImage3");
+                const thumbs = document.querySelectorAll("#demoThumbnails3 .thumb");
+
+                thumbs.forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        thumbs.forEach(t => t.classList.remove("active"));
+                        btn.classList.add("active");
+
+                        mainImage.src = btn.dataset.src;
+                    });
+                });
+            })();
+            </script>
 
 
                 <div id="modal4" class="modal">
@@ -3671,6 +3580,37 @@
                 .thumb.active { outline:3px solid #ff009d; }
                 </style>
 
+                <!-- Updated Script -->
+                <script>
+                (function() {
+                    const videoBox = document.getElementById("mainVideo4");
+                    const imageBox = document.getElementById("mainImage4");
+                    const thumbs = document.querySelectorAll("#demoThumbnails4 .thumb");
+
+                    function activate(btn) {
+                        thumbs.forEach(t => t.classList.remove("active"));
+                        btn.classList.add("active");
+
+                        const type = btn.dataset.type;
+                        const src = btn.dataset.src;
+
+                        if (type === "video") {
+                            imageBox.style.display = "none";
+                            videoBox.style.display = "block";
+                            videoBox.innerHTML = `<source src="${src}" type="video/mp4">`;
+                            videoBox.load();
+                            videoBox.play().catch(()=>{});
+                        } else {
+                            try { videoBox.pause(); } catch(e){}
+                            videoBox.style.display = "none";
+                            imageBox.src = src;
+                            imageBox.style.display = "block";
+                        }
+                    }
+
+                    thumbs.forEach(btn => btn.addEventListener("click", () => activate(btn)));
+                })();
+                </script>
 
         <div id="modal6" class="modal">
             <div class="modal-content">
@@ -3746,7 +3686,34 @@
         .thumb.active { outline:3px solid #ff009d; }
         </style>
 
-        
+        <!-- Demo Viewer Script -->
+        <script>
+        (function() {
+            const videoBox = document.getElementById("mainVideo6");
+            const imageBox = document.getElementById("mainImage6");
+            const thumbs = document.querySelectorAll("#demoThumbnails6 .thumb");
+
+            function activate(btn) {
+                thumbs.forEach(t => t.classList.remove("active"));
+                btn.classList.add("active");
+
+                const type = btn.dataset.type;
+                const src = btn.dataset.src;
+
+                if (type === "video") {
+                    imageBox.style.display = "none";
+                    videoBox.style.display = "block";
+                    videoBox.innerHTML = `<source src="${src}" type="video/mp4">`;
+                    videoBox.load();
+                    videoBox.play().catch(()=>{});
+                }
+            }
+
+            thumbs.forEach(btn =>
+                btn.addEventListener("click", () => activate(btn))
+            );
+        })();
+        </script>
 
     <!-- Skills Section -->
     <section id="skills" class="section-animate" style="background: var(--bg-lighter);">
@@ -4258,49 +4225,39 @@
             bgMusic.volume = e.target.value / 100;
         });
 
-        // ==================== SCROLL HANDLER (performance optimized) ====================
-        (function(){
-            const progressBar = document.getElementById('progressBar');
+        // ==================== PROGRESS BAR ====================
+        function updateProgressBar() {
+            const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        }
+
+        window.addEventListener('scroll', updateProgressBar);
+
+        // ==================== MOBILE MENU ====================
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // ==================== NAVBAR SCROLL ====================
+        window.addEventListener('scroll', () => {
             const navbar = document.querySelector('.navbar');
-            const sections = document.querySelectorAll('section');
-            const navLinks = document.querySelectorAll('.nav-link');
-            const scrollTopBtn = document.getElementById('scrollTop');
-            let ticking = false;
-
-            function handleScroll(){
-                const scrollY = window.scrollY || window.pageYOffset;
-
-                // progress bar
-                if (progressBar) {
-                    const scrolled = (scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-                    progressBar.style.width = Math.min(100, Math.max(0, scrolled)) + '%';
-                }
-
-                // navbar shadow
-                if (navbar) {
-                    if (scrollY > 100) navbar.classList.add('scrolled'); else navbar.classList.remove('scrolled');
-                }
-
-                // scroll to top visibility
-                if (scrollTopBtn) {
-                    if (scrollY > 500) scrollTopBtn.classList.add('visible'); else scrollTopBtn.classList.remove('visible');
-                }
-
-                // active navigation handled by IntersectionObserver in main.js (setupActiveNavigation)
-
-                ticking = false;
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
             }
-
-            window.addEventListener('scroll', function(){
-                if (!ticking) {
-                    requestAnimationFrame(handleScroll);
-                    ticking = true;
-                }
-            }, { passive: true });
-
-            // initial run
-            handleScroll();
-        })();
+        });
 
         // ==================== SMOOTH SCROLLING ====================
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -4316,7 +4273,26 @@
             });
         });
 
-        // Active navigation handled in optimized scroll handler above
+        // ==================== ACTIVE NAVIGATION ====================
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').slice(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
 
         // ==================== STATS COUNTER ====================
         const observerOptions = { threshold: 0.5, rootMargin: '0px 0px -100px 0px' };
@@ -4423,47 +4399,17 @@
             }
         });
 
-        // Theme toggle popup (small mobile control)
-        (function(){
-            const themeToggle = document.getElementById('themeToggle');
-            const themePopup = document.getElementById('themePopup');
-
-            if (!themeToggle || !themePopup) return;
-
-            function openPopup() {
-                themePopup.classList.add('open');
-                themePopup.setAttribute('aria-hidden','false');
-                // focus first button for accessibility
-                const first = themePopup.querySelector('.theme-btn');
-                if (first) first.focus();
-            }
-
-            function closePopup() {
-                themePopup.classList.remove('open');
-                themePopup.setAttribute('aria-hidden','true');
-            }
-
-            themeToggle.addEventListener('click', function(e){
-                e.stopPropagation();
-                if (themePopup.classList.contains('open')) closePopup(); else openPopup();
-            });
-
-            // Close when clicking outside
-            document.addEventListener('click', function(e){
-                if (!themePopup.contains(e.target) && e.target !== themeToggle) {
-                    closePopup();
-                }
-            });
-
-            // Close on Escape
-            document.addEventListener('keydown', function(e){
-                if (e.key === 'Escape') closePopup();
-            });
-        })();
-
 
         // ==================== SCROLL TO TOP ====================
         const scrollTopBtn = document.getElementById('scrollTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
 
         scrollTopBtn.addEventListener('click', () => {
             window.scrollTo({
@@ -4595,6 +4541,5 @@
             console.log('Features: Voice Assistant, Music Player, Animated Sections, Project Modals, Skills Progress');
         });
     </script>
-    <script src="JS/main.js"></script>
 </body>
 </html>
