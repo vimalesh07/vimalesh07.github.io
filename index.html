@@ -184,6 +184,10 @@
             .page-bg .gradient-anim { animation: none !important; }
         }
 
+        /* Fast-load state: minimize animated work during initial paint to improve perceived load on mobile */
+        .fastload .page-bg .gradient-anim { animation: none !important; opacity: 0.6; filter: none; }
+        .fastload .page-bg canvas, .fastload .page-bg .liquid-overlay, .fastload .page-bg .liquid-overlay-2 { opacity: 0.0; }
+
         /* Mobile: reduce gradient opacity and movement for performance and clarity */
         @media (max-width: 768px) {
             .page-bg .gradient-anim { opacity: 0.55; background-size: 150% 150%; }
@@ -3338,7 +3342,7 @@
             <div class="about-image">
                 <div class="image-container">
                     <!-- Inserted your image instead of icon -->
-                    <img src="assets/images/profile-3.jpg" alt="Profile Image" class="profile-img">
+                    <img src="assets/images/profile-3.jpg" alt="Profile Image" class="profile-img" loading="lazy" decoding="async">
                     <!-- Overlay kept as it is -->
                     <div class="image-overlay">
                         <div class="overlay-text">
@@ -3656,21 +3660,21 @@
                                     data-type="video"
                                     data-src="./assets/images/oil_spill.mp4">
                                     <span class="thumb-overlay"><i class="fas fa-play"></i></span>
-                                    <img src="./assets/images/oil_home.png">
+                                    <img src="./assets/images/oil_home.png" loading="lazy" decoding="async">
                                 </button>
 
                                 <!-- Image Thumbnail 1 -->
                                 <button class="thumb"
                                     data-type="image"
                                     data-src="./assets/images/oil_home.png">
-                                    <img src="./assets/images/oil_home.png">
+                                    <img src="./assets/images/oil_home.png" loading="lazy" decoding="async">
                                 </button>
 
                                 <!-- Image Thumbnail 2 -->
                                 <button class="thumb"
                                     data-type="image"
                                     data-src="./assets/images/oil_spill_map.png">
-                                    <img src="./assets/images/oil_spill_map.png">
+                                    <img src="./assets/images/oil_spill_map.png" loading="lazy" decoding="async">
                                 </button>
 
                             </div>
@@ -3769,13 +3773,13 @@
                             <div class="demo-preview" id="demoPreview3">
                                 <img id="mainImage3" class="demo-media" 
                                     src="./assets/images/plantmed.png" 
-                                    alt="Plant Identification Demo">
+                                    alt="Plant Identification Demo" loading="lazy" decoding="async">
                             </div>
 
                             <div class="demo-thumbnails" id="demoThumbnails3">
                                 <button class="thumb active"
                                     data-src="./assets/images/plantmed.png">
-                                    <img src="./assets/images/plantmed.png" alt="Plant Demo Thumbnail">
+                                    <img src="./assets/images/plantmed.png" alt="Plant Demo Thumbnail" loading="lazy" decoding="async">
                                 </button>
                             </div>
                         </div>
@@ -3874,14 +3878,14 @@
                                             data-type="video"
                                             data-src="./assets/images/Recording 2025-12-10 211750.mp4">
                                         <span class="thumb-overlay"><i class="fas fa-play"></i></span>
-                                        <img src="D:\portfolio\portfolio_1\assets\images\ai_biodegradeble.png" alt="Classifier Demo Thumbnail">
+                                        <img src="D:\portfolio\portfolio_1\assets\images\ai_biodegradeble.png" alt="Classifier Demo Thumbnail" loading="lazy" decoding="async">
                                     </button>
 
                                     <!-- Added: Image Thumbnail -->
                                     <button class="thumb"
                                             data-type="image"
                                             data-src="./assets/images/ai_biodegradeble.png">
-                                        <img src="./assets/images/ai_biodegradeble.png" alt="Biodegradable Classifier Image">
+                                        <img src="./assets/images/ai_biodegradeble.png" alt="Biodegradable Classifier Image" loading="lazy" decoding="async">
                                     </button>
 
                                 </div>
@@ -3987,7 +3991,7 @@
                                     data-type="video"
                                     data-src="./assets/images/handgesture.mp4">
                                 <span class="thumb-overlay"><i class="fas fa-play"></i></span>
-                                <img src="./assets/images/hand.png" alt="Hand Gesture Demo Thumbnail">
+                                <img src="./assets/images/hand.png" alt="Hand Gesture Demo Thumbnail" loading="lazy" decoding="async">
                             </button>
                         </div>
 
@@ -4496,11 +4500,44 @@
 
     <!-- JavaScript -->
     <script>
-        // ==================== LOADING ANIMATION ====================
+        // ==================== LOADING ANIMATION & fast initial paint ====================
+        // Put document into a fastload state immediately to avoid heavy animations during first paint
+        try { document.documentElement.classList.add('fastload'); } catch(e){}
+
         window.addEventListener('load', () => {
+            // choose a shorter loader delay for mobile devices
+            const isMobile = window.__perfProfile ? window.__perfProfile.isMobile : (/Mobi|Android|iP(hone|od|ad)/i.test(navigator.userAgent || ''));
+            const loaderDelay = isMobile ? 700 : 1200;
             setTimeout(() => {
-                document.querySelector('.loader').classList.add('hidden');
-            }, 1800);
+                const loader = document.querySelector('.loader');
+                if (loader) loader.classList.add('hidden');
+            }, loaderDelay);
+
+            // defer heavy initialization (particles, liquid canvas, parallax) to idle time
+            function initHeavy() {
+                try { document.documentElement.classList.remove('fastload'); } catch(e){}
+
+                // start liquid canvas fallback if pending
+                try { if (window.__liquidCanvasPendingStart) { window.__liquidCanvasPendingStart = false; window.__liquidCanvasStart && window.__liquidCanvasStart(); } } catch(e){}
+                // start particles if pending (saved preference or allowed by profile)
+                try {
+                    if (window.__particlesPendingStart) {
+                        window.__particlesPendingStart = false;
+                        window.__particlesStart && window.__particlesStart();
+                    }
+                } catch(e){}
+
+                // start parallax if enabled and allowed by profile
+                try {
+                    const savedP = localStorage.getItem('portfolioEffectParallax');
+                    const enabledP = savedP === null ? (window.__perfProfile ? window.__perfProfile.parallaxEnabled : true) : savedP === 'true';
+                    if (enabledP) {
+                        window.__parallaxStart && window.__parallaxStart();
+                    }
+                } catch(e){}
+            }
+
+            if ('requestIdleCallback' in window) requestIdleCallback(initHeavy, { timeout: 2000 }); else setTimeout(initHeavy, 1500);
         });
 
         // ==================== VOICE ASSISTANT (ONE-CLICK, ONE-READ) ====================
@@ -4845,9 +4882,12 @@
                 svg.style.display = 'block';
             }
 
-            // Initialize on DOMContentLoaded to ensure sizes are correct
+            // Initialize on DOMContentLoaded to ensure sizes are correct, but defer actual start until idle
             window.addEventListener('DOMContentLoaded', () => {
-                if (needCanvasFallback) startCanvas();
+                if (needCanvasFallback) {
+                    // flag pending start; actual start will be performed in initHeavy (idle time)
+                    window.__liquidCanvasPendingStart = true;
+                }
             });
 
             window.addEventListener('resize', () => {
@@ -5070,14 +5110,13 @@
             window.__particlesStart = start;
             window.__particlesStop = stop;
 
-            // auto-start if saved enabled (only auto-start on non-low devices unless user explicitly enabled particles)
+            // auto-start: defer actual start until idle initHeavy. mark pending conditions here.
             try {
                 const saved = localStorage.getItem('portfolioEffectParticles');
                 if (saved === 'true') {
-                    start();
+                    window.__particlesPendingStart = true;
                 } else if (saved === null) {
-                    // no user preference: only auto-start when device tier is not 'low'
-                    if (!(window.__perfProfile && window.__perfProfile.tier === 'low')) start();
+                    if (!(window.__perfProfile && window.__perfProfile.tier === 'low')) window.__particlesPendingStart = true;
                 }
             } catch(e){}
 
